@@ -4,14 +4,14 @@ class Quote extends React.Component {
   render() {
     // console.log(this.props.quote)
     return (
-      <div className="quote-div">
-        <h3 className="author">
-          {this.props.quote.author}
-        </h3>
+      <div>
         <p className="quote">
           {this.props.quote.quote}
         </p>
-        <small>
+        <h3 className="author">
+          {this.props.quote.author}
+        </h3>
+        <small className="category">
           category: {this.props.quote.cat}
         </small>
       </div>

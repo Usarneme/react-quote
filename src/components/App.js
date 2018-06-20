@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import Quote from './Quote'
-import AllQuotes from './AllQuotes'
-import { getRandomNumber } from '../helpers'
+// import AllQuotes from './AllQuotes'
+import { getRandomNumber } from '../helpers/helperFunctions'
+import colorPalette from '../helpers/colorPalette'
+
 
 class App extends Component {
   state = {
     quotes: [],
     currentQuoteNumber: 0,
     currentQuote: ''
+  }
+
+  changeBackgroundColor = () => {
+    document.body.style = `background: ${colorPalette[Math.floor(Math.random() * Math.floor(colorPalette.length))]};`
   }
 
   getRandomQuote = () => {
@@ -18,9 +24,10 @@ class App extends Component {
       currentQuoteNumber: randomNumber,
       currentQuote: this.state.quotes[randomNumber].quote
     })
+    this.changeBackgroundColor()
   }
 
-  componentWillMount() {
+  componentWillMount = () => {
     axios.get(`https://talaikis.com/api/quotes/`)
       .then(res => {
         // set state of quotes with fetched quotations
@@ -31,6 +38,7 @@ class App extends Component {
         this.getRandomQuote()
       }
     )
+    this.changeBackgroundColor()
   }
 
   componentDidMount() {
@@ -53,19 +61,19 @@ class App extends Component {
   render() {
 
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React-Quotes</h1>
-        </header>
-        <button onClick={this.getRandomQuote}>New Quote</button>
-        <div>
+      <div className="home">
+        <button className="selector" onClick={this.getRandomQuote}>Load New Quote</button>
+        <div className="quote-div">
+          { !this.state && 
+              <h2>Loading</h2>
+          }
           { this.state && this.state.quotes.length > 0 &&
             <Quote quote={this.state.quotes[this.state.currentQuoteNumber]} />
           }
         </div>
-        { this.state && this.state.quotes.length > 0 &&
+        {/* { this.state && this.state.quotes.length > 0 &&
           <AllQuotes quotes={this.state.quotes} />
-        }
+        } */}
       </div>
     );
   }
