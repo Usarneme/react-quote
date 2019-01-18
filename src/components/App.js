@@ -5,10 +5,12 @@ import Quote from './Quote'
 import { getRandomNumber } from '../helpers/helperFunctions'
 import colorPalette from '../helpers/colorPalette'
 
+import defaultQuotes from '../helpers/default_quotes'
+import '../css/style.css'
 
 class App extends Component {
   state = {
-    quotes: [],
+    quotes: defaultQuotes,
     currentQuoteNumber: 0,
     currentQuote: ''
   }
@@ -28,17 +30,16 @@ class App extends Component {
   }
 
   componentWillMount = () => {
-    axios.get(`https://talaikis.com/api/quotes/`)
+    // will return an Array [] of length posts_per_page, 
+    // each post object has a TITLE (author/speaker), ID, CONTENT, and LINK, and optional CUSTOM_META obj containing a SOURCE
+    axios.get(`https://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10`)
       .then(res => {
         // set state of quotes with fetched quotations
         this.setState({
-          quotes: res.data
+          quotes: [...res.data]
         })
-        // initialize a random quote to display
-        this.getRandomQuote()
       }
     )
-    this.changeBackgroundColor()
   }
 
   componentDidMount() {
@@ -50,6 +51,8 @@ class App extends Component {
         quotes: localStorageRef
       })
     }
+    // initialize by setting a random background color
+    this.changeBackgroundColor()
   }
 
   componentDidUpdate() {
@@ -59,17 +62,11 @@ class App extends Component {
   }
 
   render() {
-
     return (
       <div className="home">
         <button className="selector" onClick={this.getRandomQuote}>Load New Quote</button>
         <div className="quote-div">
-          { !this.state && 
-              <h2>Loading</h2>
-          }
-          { this.state && this.state.quotes.length > 0 &&
-            <Quote quote={this.state.quotes[this.state.currentQuoteNumber]} />
-          }
+          <Quote quote={this.state.quotes[this.state.currentQuoteNumber]} />
         </div>
         {/* { this.state && this.state.quotes.length > 0 &&
           <AllQuotes quotes={this.state.quotes} />
